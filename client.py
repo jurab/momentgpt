@@ -2,59 +2,76 @@
 import boto3
 import os
 import openai
+import time
 import json
 
+from botocore.exceptions import ClientError
+from dataclasses import dataclass
+from halo import Halo
+
 openai.api_key = os.getenv("OPENAI_KEY")
-s3 = boto3.resource('s3')
+
+transcribe = boto3.client('transcribe')
+s3 = boto3.client('s3')
 
 START_PROMPT = """The following is a transcript of a cooking lesson. The chef talks to the pupil. The narrator summarizes for the viewers what the chef says.
 
 Chef: Let's start.
 Narrator: The chef is about to start the lesson."""
 
-MID_PROMPT = "The lesson is over. Let's talk to the pupil now to find out what they learned."
-
 
 QUESTIONS = (
-    "What dish have you made today?",
-    "How did the chef describe their vision for the dish?",
+    "What did you cook today?",
+    "How did the chef describe the ideal version of the dish?",
+    "What was exceptional about your result?",
     "Did you have any moments of doubt?",
-    "What part of the recipe was the focus today?",
-    "What was the key technique for that?",
-    "Did the chef talk mostly about that?",
-    "How do you get control there?",
-    "What's the reasoning, or science behind it?",
-    "When do you have to react?",
-    "What happens when it goes wrong?",
+    "What aspect of the dish did the chef focus the lesson on?",
+    "What useful knowledge did you gain?",
+    "Can you explain that in terms of the science of cooking?",
 )
 
 
+QUESTIONS = '\n'.join([f'{i}. {question}' for i, question in enumerate(QUESTIONS, 1)])  # numbered list with newlines
+
+
+MID_PROMPT = f"""After the lesson is over, the pupil gets a questionnaire about the lesson. These are the questions:
+{QUESTIONS}
+
+And here are the pupil's answers:"""
+
+
 class Models:
-    DAVINCI = 'text-davinci-001'
+    DAVINCI = 'text-davinci-001'  # largest
     CURIE = 'text-curie-001'
     BABBAGE = 'text-babbage-001'
-    ADA = 'text-ada-001'
+    ADA = 'text-ada-001'  # smallest
 
 
 class BotoError(Exception):
     pass
 
 
-class Narrator(Models):
+@dataclass(init=False)
+class NarratorResult:
+    feedback: str
+    answers: str
+
+
+class Narrator:
 
     model = Models.DAVINCI
-    temperature = 0.5
-    max_tokens=50
-    top_p=1
-    frequency_penalty=0
-    presence_penalty=0
+    temperature = 0.9
+    top_p = 1
+    frequency_penalty = 0
+    presence_penalty = 0
+    result = NarratorResult()
 
-    def _predict_next(self, prompt:str=START_PROMPT, stop:list=["Chef:", "Narrator:"]) -> str:
+    def _predict_next(self, prompt:str=START_PROMPT, stop:list=["Chef:", "Narrator:"], max_tokens:int=75) -> str:
         response = openai.Completion.create(
           engine=self.model,
           prompt=prompt,
           temperature=self.temperature,
-          max_tokens=self.max_tokens,
+          max_tokens=max_tokens,
           top_p=self.top_p,
           frequency_penalty=self.frequency_penalty,
           presence_penalty=self.presence_penalty,
@@ -64,6 +81,7 @@ class Narrator(Models):
             print("FAILED PROMPT\n----------------------------------------\n" + prompt + '\n----------------------------------------')
             raise AssertionError("No response from GPT")
 
+        # response = "A dumb ai sentence."
         return response
 
     def _converse(self, prompt:str, persona_in:str, persona_gpt:str, sentences:str) -> str:
@@ -71,46 +89,104 @@ class Narrator(Models):
 
         for input_sentence in sentences:
             prompt += f"\n{persona_in}: {input_sentence}\n{persona_gpt}:"
-            gpt_reaction = self._predict_next(prompt, stops)
+            gpt_reaction = self._predict_next(prompt, stops, max_tokens=50)
             prompt += f" {gpt_reaction}"
 
         return prompt
 
-    def run(self, filename:str, model=Models.ADA) -> str:
-        sentences = [item.strip() + '.' for item in open(f"transcripts/{filename}", 'r').read().strip().split('.') if item]
+    def query_answers(self, context):
+        prompt = context + f"\n\n{MID_PROMPT}\n"
+        return self._predict_next(prompt, max_tokens=300, stop=None)
+
+
+    def run(self, transcript:str, model=Models.ADA) -> str:
+        sentences = transcript.strip().replace('...', '@@').split('.')
+        sentences = [sentence.strip().replace('@@', '...') + '.' for sentence in sentences if sentence]
         sentence_pairs = [' '.join(pair) for pair in zip(sentences[::2], sentences[1::2])]
 
         # CHEF FEEDBACK
         prompt = self._converse(START_PROMPT, 'Chef', 'Narrator', sentence_pairs)
+        # prompt = open('results/aki_paella.txt', 'r').read()
+
+        self.result.feedback = prompt
 
         # INQUIRIES
-        # prompt += f"\n\n{MID_PROMPT}\n"
-        # prompt = self._converse(prompt, 'Narrator', 'Pupil', QUESTIONS)
+        gpt_answers = self.query_answers(prompt)
+        prompt += f"\n\n{MID_PROMPT}\n"
+        prompt += gpt_answers
+        self.result.answers = gpt_answers
 
         return prompt
 
 
 class Client:
-    bucket = "moment-assets-prod"
-    prefix = "uploads/feedback/feedback_audio"
-    bucket_url = "https://s3.console.aws.amazon.com/s3/object/moment-assets-prod"
+    s3_url = "https://s3.console.aws.amazon.com/s3/object"
+
+    audio_bucket: str = "moment-assets-prod"
+    audio_prefix: str = None
+    audio_url: str = None
+
+    text_bucket: str = "moment-ml-feedback-processing"
+    text_prefix: str = None
+    text_url: str = None
+
+    feedback_id: str = None
+    transcript: str = None
+    narrative: str = None
 
     def __init__(self, feedback_id:str=None):
-        self.feedback_id = feedback_id
-        self.s3_url = f"{self.bucket_url}?region=eu-west-2&prefix={self.prefix}/{self.feedback_id}/mp3_blob.mp3"
 
-    def narrate(self, filename:str) -> str:
-        return Narrator().run(filename, model=Models.DAVINCI)
+        self.feedback_id = feedback_id if feedback_id else None
+        self.narrator = Narrator()
 
-    def _feedback_exists(self, feedback_id: str) -> bool:
-        list_response = json.loads(s3.list_objects(Bucket=self.bucket, Prefix=f"{self.prefix}/{feedback_id}"))
-        return bool(list_response.get('Contents', None))
+        self.audio_prefix = f"uploads/feedback/feedback_audio/{feedback_id}"
+        self.text_prefix = f"{self.feedback_id}/{self.feedback_id}.json"
 
-    def transcribe(self, feedback_id: str):
-        if not self._feedback_exists(feedback_id):
-            raise BotoError(f"Feedback not found at {self.bucket}/{self.prefix}/{feedback_id}")
+        self.audio_url = f"s3://{self.audio_bucket}/{self.audio_prefix}/mp3_blob.mp3"
+        self.text_url = f"s3://{self.text_bucket}/{self.text_prefix}.json"
+
+    def narrate(self) -> str:
+        with Halo(text='Conversing with GPT'):
+            self.narrative = self.narrator.run(self.transcript, model=Models.DAVINCI)
+            return self.narrative
+
+    def _s3_folder_exists(self, bucket: str, prefix: str) -> bool:
+        return 'Contents' in s3.list_objects(Bucket=bucket, Prefix=prefix)
+
+    def transcribe(self):
+        if not self._s3_folder_exists(self.audio_bucket, self.audio_prefix):
+            raise BotoError(f"Feedback folder not found at {self.audio_url}")
+
+        if self._s3_folder_exists(self.text_bucket, self.feedback_id):
+            raise BotoError(f"Transcription already exists at {self.text_url}")
+
+        with Halo(text='Running transcription'):
+            try:
+                transcribe.start_transcription_job(
+                    TranscriptionJobName=self.feedback_id,
+                    Media={
+                        'MediaFileUri': self.audio_url
+                    },
+                    MediaFormat='mp3',
+                    OutputBucketName=self.text_bucket,
+                    OutputKey=self.text_prefix,
+                    IdentifyLanguage=True
+                )
+
+            except ClientError:
+                raise BotoError(f"Failed starting transcription at {self.audio_url}")
+
+            while True:
+                status = transcribe.get_transcription_job(TranscriptionJobName=self.feedback_id)
+                if status['TranscriptionJob']['TranscriptionJobStatus'] in ['COMPLETED', 'FAILED']:
+                    break
+                time.sleep(5)
+
+        with Halo(text='Fetching transcription'):
+            transcript = json.loads(s3.get_object(Bucket=self.text_bucket, Key=self.text_prefix)['Body'].read())['results']['transcripts'][0]['transcript']
+
+        self.transcript = transcript
+        return transcript
 
 
-client = Client()
-out = client.narrate("aki_paella.txt")
-print(out)
+client = Client("646ee549-8d81-43b5-8470-257fdc26dda2")
