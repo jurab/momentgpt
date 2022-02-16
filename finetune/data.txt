@@ -56,85 +56,75 @@ Chef: Ok, so let’s have a real focus on that lamb and just stop, when you get 
 Narrator: Ross reminds Richard to focus on the lamb and to stop cooking it when it reaches a desirable consistency.
 Chef: Thank you, bye.
 
-The lesson is over. Let's talk to the pupil now to find out what they learned.
+After the lesson is over, the pupil gets a questionnaire about the lesson. These are the questions:
+1. What did you cook today?
+2. How did the chef describe the ideal version of the dish?
+3. What was exceptional about your result?
+4. Did you have any moments of doubt?
+5. What aspect of the dish did the chef focus the lesson on?
+6. What useful knowledge did you gain?
+7. Did the chef explain how that process works from first principles?
 
-Narrator: What dish have you made today?
-Pupil: I've made a lamb navarin.
-Narrator: How did the chef describe his vision for the dish?
-Pupil: The chef described his vision for the dish as a light, summery stew with a delicate flavour and finesse.
-Narrator: Did you have any moments of doubt?
-Pupil: I didn't have any moments of doubt, except for when I was unsure about how much salt to add.
-Narrator: What focus did the lesson have today?
-Pupil: The focus today was on the lamb and how to cook it properly.
-Narrator: What was the key technique for that?
-Pupil: The key technique was searing the lamb in order to lock in the juices, and then braising it slowly at a low temperature.
-Narrator: Did the chef talk mostly about that?
-Pupil: Yes, the chef talked mostly about how to cook the lamb properly.
-Narrator: How do you get control there?
-Pupil: I think the key is to pay attention to the temperature, and to make sure the lamb doesn't cook too quickly.
-Narrator: What's the reasoning, or science behind it?
-Pupil: The reasoning is that if you cook the lamb too quickly, it will become tough and chewy.
-Narrator: When do you have to react?
-Pupil: You have to react when the lamb is seared, and then turn the heat down to a low temperature in order to braise it.
-Narrator: What happens when it goes wrong?
-Pupil: When it goes wrong, the lamb can become tough and chewy.
+And here are the pupil's answers:
+1. I cooked a lamb navarin.
+2. The chef described the ideal version of the dish as being rich in appearance, with bright vegetables.
+3. My result was exceptional because the lamb was cooked well and the vegetables were very colourful.
+4. I had moments of doubt when I added too much salt to the dish.
+5. The chef focused the lesson on the cooking of the lamb.
+6. I learnt that it is important to get a high temperature to create a good caramelisation, and that braising with a less tender cut of meat will still produce good results.
+7. The chef explained how the process of searing in the juices and then braising the lamb creates tenderness.
 
 ###
 
-The following is a transcript of a cooking lesson. The chef comments on the pupil's cooking itself and the narrator explains what the expert chef means.
+The following is a transcript of a cooking lesson. The chef talks to the pupil. The narrator summarizes for the viewers what the chef says.
 
-Chef: The pupil just finished cooking, so let's see how did it go.
+Chef: Let's start.
 Narrator: The chef is about to start the lesson.
-Chef: Hi Aki, thanks for your video.
-Narrator: The chef greets his pupil.
-Chef: Your main goal is to achieve paella valenciana that you remember you had like with full of flavour and the rice nice and fluffy and so, let's see if we can get there.
-Narrator: Today they are repeating a paella valenciana recipe from the last session. It worked out well last time.
+Chef: Hi Aki, thanks for your video. Your main goal is to achieve Paella Valenciana that you remember you had like with full of flavour and the rice nice and fluffy and so, let's see if we can get there.
+Narrator: The chef is talking to Aki. The chef's goal is to help Aki create a Paella Valenciana that is flavorful and has fluffy rice.
 Chef: Ok. So, you say that the rice this time for the chicken this time goes much nicer and with a lot of moisture.
-Narrator: The pupil was happy about how the dish was full of moisture, it is better this time.
-Chef: The chicken looks great and nice color, nice color and looks good.
-Narrator: The chef noticed that the chicken this time was in a better state. The color and the texture are not dry but moist and soft.
-Chef: I think you got it, the chicken and the beans and all this, you got it right. So, just keep doing this.
-Narrator: The chef says that he has done well with the chicken and beans.
-Chef: With the tomato... if when you go to buy to the veg guy or the shop, local shop or whatever, when you see the uglies almost gone tomato this ones will have like full of flavour. So more ugly and almost gone, the better flavour it will have.
-Narrator: The uglies almost gone tomatoes are the best. He says that if an ugly tomato is cooked it will have more flavor and taste better.
-Chef: You don't put in a salad, you're grating it, so doesn't matter if looks ugly. I mean, for the paella the biggest challenge is to cook the rice right.
-Narrator: He wants things to be cooked right. To cook the correct rice. Chefs frequently say this as it is the most important in a dish; if you have the correct rice, the correct cooking method, then you have a good recipe.
-Chef: So good choice that you put chicken broth so all the paella will have a lot of flavour.
-Narrator: The use of chicken broth is a good choice as it will give the dish more flavor.
-Chef: If you add water you have to do the stock in the pan a la minute, it's a good choice to have it done before. Ok. The rice. The biggest problem is the rice. The rice you say that you're using arborio rice. This type of rice is used normally for rice pudding and risotto, because has a lot of a starch and helps for the technique called liaison to thicken a sauce in this case using the starch of the rice.
-Narrator: The rice he chooses for puddings and risotto has more starch to thicken a sauce. This may not be the best choice for paella as he wants it to have more moisture, be less dry.
-Chef: If you can't find bomba rice I think you have to think to take in all the starch out from the rice so, just think how you can take all the starch before you put in the pan.
-Narrator: He thinks she could try soaking the rice over night to a bowl with cold water, to let the starch run out.
-Chef: Each type of rice has different measures for the liquid, some of them takes one part of rice, one part of liquid. Some of them one part of rice, two parts of liquid. Some of theme even three parts of, three and a half parts of liquid so just think how you can, you can find out which type of rice you are using and how much water that, how much water you have to put inside.
-Narrator: Different rice have different methods of preparation. Sometimes 1 part rice to 1 part water, other time one to two, or even three.
-Chef: The pan, the pan you are using, the pan you are using, an electric pan that you are using just keep bear mind that it's quite thick, so the temperature changes will take longer because it will keep longer the heat.
-Narrator: He observes that the pot is thick and that heat can be trapped in it so it heats up slowly.
-Chef: To do the paellas normally the pans are very thin metal ones so when you put the heat high it goes quick and when you put the heat down the temperature will come, will go down quicker than if the pan is thick that will keep the heat for longer.
-Narrator: Thin metal pans will heat up and cool quickly. Thick ones are slower to heat but slower to cool too.
-Chef: And, for the socarrat when you put at the end the heat there's a thing that the paella has to have still a little bit of moisture or a little bit of stock inside, so finished absorbing all the stock and is when will start like toasting the rice from the bottom.
-Narrator: The rice is toasted from the bottom. Toasted, or socarrat in Spanish, is desirable; part of a paella.
-Chef: In Valencia and Alicante normally the people always rest the paella so normally they put a little bit of tinfoil inside and you rest a little bit so all the grains can absorb all the flavours that are in the pan so think about resting it a little bit and just cover it with something.
-Narrator: He says the paella is rested. Spanish chefs rest paella made in a thin pot. This helps all the moisture to be absorbed. They cover the dish with foil and put it on the side to let the rice absorb all the flavors.
-Chef: That's it for today's advice. Great job!
+Narrator: The chef agrees with Aki that the rice turned out nicer this time and that it had a lot of moisture.
+Chef: The chicken looks great and nice color, nice color and looks good. I think you got it, the chicken and the beans and all this, you got it right.
+Narrator: The chef is impressed with the chicken, beans, and other ingredients in the dish and believes Aki has succeeded.
+Chef: So, just keep doing this. With the tomato... if when you go to buy to the veg guy or the shop, local shop or whatever, when you see the uglies almost gone tomato this ones will have like full of flavour.
+Narrator: The chef advises Aki to buy tomatoes that are almost gone because they will have more flavor.
+Chef: So more ugly and almost gone, the better flavour it will have. You don't put in a salad, you're grating it, so doesn't matter if looks ugly.
+Narrator: The chef tells Aki that it doesn't matter if the tomatoes are ugly because they will be grated.
+Chef: I mean, for the paella the biggest challenge is to cook the rice right. So good choice that you put chicken broth so all the paella will have a lot of flavour.
+Narrator: The chef is impressed that Aki put chicken broth in the dish and believes it will add flavor.
+Chef: If you add water you have to do the stock in the pan a la minute, it's a good choice to have it done before. Ok.
+Narrator: The chef tells Aki that if he had added water, he would have had to make the stock in the pan right before adding the rice.
+Chef: The rice. The biggest problem is the rice.
+Narrator: The chef is concerned about the rice.
+Chef: The rice you say that you're using arborio rice. This type of rice is used normally for rice pudding and risotto, because has a lot of a starch and helps for the technique called liaison to thicken a sauce in this case using the starch of the rice.
+Narrator: The chef tells Aki that the arborio rice he is using is usually used for rice pudding and risotto because it has a lot of starch. This starch will help thicken the sauce.
+Chef: If you can't find bomba rice I think you have to think to take in all the starch out from the rice so, just think how you can take all the starch before you put in the pan. Each type of rice has different measures for the liquid, some of them takes one part of rice, one part of liquid.
+Narrator: The chef tells Aki that if he can't find bomba rice, he will need to take the starch out of the rice before cooking it. Different types of rice have different measures for the liquid.
+Chef: Some of them one part of rice, two parts of liquid. Some of theme even three parts of, three and a half parts of liquid so just think how you can, you can find out which type of rice you are using and how much water that, how much water you have to put inside.
+Narrator: The chef tells Aki that he needs to think about how much water he needs to put in the rice depending on the type of rice he is using.
+Chef: The pan, the pan you are using, the pan you are using, an electric pan that you are using just keep bear mind that it's quite thick, so the temperature changes will take longer because it will keep longer the heat. To do the paellas normally the pans are very thin metal ones so when you put the heat high it goes quick and when you put the heat down the temperature will come, will go down quicker than if the pan is thick that will keep the heat for longer.
+Narrator: The chef tells Aki that because his pan is thick, the temperature changes will take longer. Thin metal pans are better for making paellas because when the heat is high, the temperature changes quickly. When the heat is low, the temperature changes quickly.
+Chef: And, for the socarrat when you put at the end the heat there's a thing that the paella has to have still a little bit of moisture or a little bit of stock inside, so finished absorbing all the stock and is when will start like toasting the rice from the bottom. In Valencia and Alicante normally the people always rest the paella so normally they put a little bit of tinfoil inside and you rest a little bit so all the grains can absorb all the flavours that are in the pan so think about resting it a little bit and just cover it with something.
+Narrator: The chef tells Aki that when he puts the heat on the paella at the end, it needs to have a little bit of moisture or stock inside. The rice will start toasting from the bottom. In Valencia and Alicante, people usually rest the paella so the grains can absorb all the flavors from the pan.
+Chef: So. Good job today and see you next time.
 
-The lesson is over. Let's talk to the pupil now to find out what they learned.
+After the lesson is over, the pupil gets a questionnaire about the lesson. These are the questions:
+1. What did you cook today?
+2. How did the chef describe the ideal version of the dish?
+3. What was exceptional about your result?
+4. Did you have any moments of doubt?
+5. What aspect of the dish did the chef focus the lesson on?
+6. What useful knowledge did you gain?
+7. Did the chef explain how that process works from first principles?
 
-Narrator: What dish have you made today?
-Pupil: Well, I tried paella valenciana.
-Narrator: Great! Which ingredients did you learn something about today?
-Pupil: Well, I learned about the rice, about resting it and about the tomato.
-Narrator: What did you learn about the tomato?
-Pupil: Well, that the ones that are almost gone have more flavor.
-Narrator: What have your learned the rice?
-Pupil: To take the starch out from it, or something like that.
-Narrator: Was the chef polite and nice to you today?
-Pupil: Yes he was.
-Narrator: Did he great you and recognize your good effort?
-Pupil: Yes he did.
-Narrator: What did he say exactly?
-Pupil: Thank you for your video.
-Narrator: Did he say anything else?
-Pupil: That I did a very nice chicken and beans.
+And here are the pupil's answers:
+1. Paella Valenciana
+2. The chef described the ideal version of the dish as flavorful and with fluffy rice.
+3. My result was exceptional because the chicken and rice turned out well.
+4. I did not have any moments of doubt.
+5. The chef focused the lesson on how to cook the rice correctly.
+6. I learned how to take the starch out of rice before cooking it and how to measure the liquid for different types of rice.
+7. The chef explained how the process works from first principles.
 
 ###
 
@@ -181,71 +171,88 @@ Narrator: Ross compliments Liz on her omelette folds and mentions that she has a
 Chef: There is a very, very attractive nice looking egg and I would like to bet that it was still lovely and soft on the inside, so let’s just focus on the temperature, distributing the temperature all the way through the egg evenly and that moment when to stop allow your skin to form and than start your folds..
 Narrator: Ross provides some concluding remarks on how to cook an omelette correctly.
 
-The lesson is over. Let's talk to the pupil now to find out what they learned.
+After the lesson is over, the pupil gets a questionnaire about the lesson. These are the questions:
+1. What did you cook today?
+2. How did the chef describe the ideal version of the dish?
+3. What was exceptional about your result?
+4. Did you have any moments of doubt?
+5. What aspect of the dish did the chef focus the lesson on?
+6. What useful knowledge did you gain?
+7. Did the chef explain how that process works from first principles?
 
-Narrator: What dish have you made today?
-Pupil: I've made an omelette.
-Narrator: How did the chef describe their vision for the dish?
-Pupil: The chef said that they wanted an omelette that was light in color and had a bulbous like lemon. They also wanted the omelette to have a nice skin like a film on the outside, and when we cut into it a lovely, light, fluffy, cooked, but still soft, almost runny centre. The chef also said that the taste should be fresh and not have an eggy taste from being overcooked.
-Narrator: Did you have any moments of doubt?
-Pupil: I wasn't sure if I was cooking the omelette correctly because I was going faster than I usually do.
-Narrator: What part of the recipe was the focus today?
-Pupil: The focus today was on temperature control for the omelette.
-Narrator: What was the key technique for that?
-Pupil: The key technique was to stir the egg quick enough so it doesn't set, doesn't curdle, doesn't go hard and get that heat moving through the entire egg mix.
-Narrator: Did the chef talk mostly about that?
-Pupil: The chef talked mostly about that. They also gave some tips on how to fold the omelette correctly.
-Narrator: How do you get control there?
-Pupil: I think the key is to keep the heat moving through the entire egg mix and to stop cooking it when the skin starts to form.
-Narrator: What's the reasoning, or science behind it? Pupil: I don't know the reasoning, or science, behind it.
-Narrator: Is there a specific moment when you have to react and stop the process?
-Pupil: I think the key is to stop cooking it when the skin starts to form.
-Narrator: What happens when it goes wrong? Pupil: If you cook it for too long, it'll be hard and rubbery, or if you cook it for too short, it'll be raw.
+1. I cooked an omelette today.
+2. The chef described the ideal version of the dish as being light in color, with a bulbous like lemon, and a nice skin like a film on the outside.
+3. My result was exceptional because the egg was light in color and there was almost a bulbous like lemon.
+4. I did not have any moments of doubt.
+5. The chef focused the lesson on temperature control for the dish.
+6. I learned that it is important to distribute the heat throughout the enitre egg mix to give us a lovely kind of evenly cooked fluffy soft texture.
+7. The chef explained how that process works from first principles.
 
 ###
 
 The following is a transcript of a cooking lesson. The chef comments on the pupil's cooking itself and the narrator explains what the expert chef means.
 
-Chef: The pupil just finished cooking, so let's see how did it go.
+Chef: Let's start.
 Narrator: The chef is about to start the lesson.
-Chef: Yes, thank you for the second chili beans. This time, the aroma was very good.
-Narrator: The chef thanks the pupil for the cooking and compliments their aroma.
-Chef: The question is whether it's okay to mix the contents of the pan or not. It's a great idea to ask yourself this question.
-Narrator: The chef brings the pupil's attention to mixing the contents of the pan.
-Chef: This time, I'm going to continue to talk about the transfer of heat, but this time I'm going to talk about whether to mix it or not. I'm sure you'll agree that it's a good idea to have a little more time to think about what you're doing.
-Narrator: The chef advises the pupil to take their time and think about what they're doing.
-Chef: Do you think he doesn't like the fact that he can paddle? And why doesn't the mixture burn?
-Narrator: The chef is curious about the pupil's thoughts on paddling and why the mixture doesn't burn.
-Chef: In other words, the heat of frying and sharpening the pan is rising, and it is looking hot. In the event that you have any questions regarding where and the best way to get in touch with us, please do not hesitate to contact us.
-Narrator: The chef provides information on how to get in touch with the cooking school.
-Chef: If you don't want it to be fragrant, or if you think it will burn beyond fragrant, you need to lower the temperature, so you need to let the outside air in and mix it in.
-Narrator: The chef advises the pupil on how to lower the temperature if they want the food to be less fragrant or prevent it from burning.
-Chef: If you think it's cold, you should know that when you boil it down, you remove water from it, and the temperature at which water evaporates is one hundred degrees. I'm sure you know that, but if you don't make it above that temperature, the water won't evaporate.
-Narrator: The chef explains that water needs to reach the boiling point to evaporate properly.
-Chef: If you find that the water doesn't come out easily, it means that the temperature is too low. If the temperature is too low, it means that the temperature is too low.
-Narrator: The chef points out that if the water isn't coming out easily, the temperature is too low.
-Chef: If the temperature is too high, it means that the temperature is too low. If the temperature is too low, it means that the temperature is too low.
-Narrator: The chef reiterates that if the temperature is too high or low, the food won't cook properly.
-Chef: So, for the third time, what do you want to do with this heat, what kind of effect do you want to get, for example, the heat to make the aroma, the heat to make the water go away, what kind of heat is this, how do you make this heat come out?
-Narrator: The chef asks the pupil what they want to achieve with the heat.
-Chef: I hope you can make even more delicious chili beans for the third time while thinking about it.
-Narrator: The chef wishes the pupil luck and encourages them to think about the heat.
+Chef: Hi, Flavia. It's Tijuana.
+Narrator: The chef is talking to the pupil, Flavia.
+Chef: I hope you're well and thank you so much for sending over your scrambled egg video. Looks really great and well done for really thinking about the equipment and utensils that you wanted to use as well that that was really good.
+Narrator: The chef is impressed by how well the pupil cooked the eggs and is grateful that they took the time to think about the equipment they needed.
+Chef: Um, the texture of your final dish is the thing that it was kind of an area of improvement, for you didn't have that creamy, glossy texture that you wanted. So we will look at that for me.
+Narrator: The chef thinks that the pupil could improve the texture of their dish.
+Chef: Scrambled eggs, Actually, my favourite type of eggs. Um, I love that they are creamy.
+Narrator: The chef likes scrambled eggs because they are creamy.
+Chef: I love that they taste rich and it almost quite indulgent, aren't they? And with such minimal ingredients, they taste amazing. So if we were thinking about the perfect scrambled egg, we want richness from the yolk.
+Narrator: The chef explains what they think makes a good scrambled egg. They mention that the eggs should be creamy and rich, with minimal ingredients.
+Chef: That's our taste. We want the appearance to be quite glossy and also very yellow.
+Narrator: The chef wants the eggs to be creamy, rich, and have a glossy appearance.
+Chef: We don't want any grey or whiteness, Tuaregs. We want that silky and soft texture, and they need to be just set.
+Narrator: The chef wants the eggs to be creamy, rich, and have a glossy appearance with a silky and soft texture.
+Chef: Um, and if we were thinking about the smell of scrambled eggs, obviously they're going to smell of eggs. So for our coaching today, we're really going to focus on timing and heat control.
+Narrator: The chef explains that they will focus on timing and heat control for the lesson.
+Chef: That's going to give you that perfect texture. Before we get into that, I'd really love for you to try to use just a knob of butter instead of oil.
+Narrator: The chef recommends that the pupil try cooking the eggs with butter instead of oil.
+Chef: Oil is going to heat up and fry the ingredient, and butter is going to be better, in fact, to use for this recipe. Um, okay, let's have a little look at your video here.
+Narrator: The chef looks at the pupil's video.
+Chef: So one thing to remember is eggs cook very easily with little heat. The longer you cook the eggs or heat the eggs, then the more water is going to come out and evaporate.
+Narrator: The chef explains that the eggs cook easily with little heat and that the longer they are cooked, the more water will evaporate.
+Chef: And that's going to give you that fluffy consistency that we don't want in scrambled eggs. So a low heat is very important.
+Narrator: The chef emphasises the importance of using low heat when cooking scrambled eggs. Otherwise they get fluffy, which we don't want.
+Chef: The other thing that is going to get your right, um, texture is thinking about your timing. You'll notice that when your eggs come off the heat, they continue to cook, so getting the timing right is really important.
+Narrator: The chef emphasises the importance of timing when cooking scrambled eggs.
+Chef: When we look at your video here, um, that's just with to the next bit. Mm.
+Narrator: The chef is not impressed with the pupil's cooking and is going to critique it.
+Chef: So about this point, you can see there's a little bit of running this still in your eggs. That is the point when you can be confident and take it off the heat because they're going to continue to cook.
+Narrator: The chef explains that the eggs are done when they start to run and that it is okay to take them off the heat at that point.
+Chef: When we look at yours here, you're still cooking, and it's quite dry already. So think about your timing and trying to get them off the heat just a little bit sooner when there's still a little bit runny is honestly going to make all the difference.
+Narrator: The chef critiques the pupil's eggs and explains that they should take them off the heat a little bit sooner so that they are still a little bit runny.
+Chef: So have a go with that. This next time really think about your heat control.
+Narrator: The chef encourages the pupil to try again and to think about their heat control.
+Chef: Low heat. Be patient and timing.
+Narrator: The chef summarises what they have said.
+Chef: Remember to take it off the heat just a little bit earlier than you actually think. And, yeah, I think once you've done that you'll be You'll be pretty good and I hope you enjoy it.
+Narrator: The chef thinks that the pupil will be able to cook scrambled eggs well once they remember to take them off the heat a little bit earlier than they think.
+Chef: Look forward to seeing your next video and I will speak to you soon. Bye.
+Narrator: The chef encourages the pupil to keep cooking and send in more videos.
 
-The lesson is over. Let's talk to the pupil now to find out what they learned.
+After the lesson is over, the pupil gets a questionnaire about the lesson. These are the questions:
+1. What did you cook today?
+2. How did the chef describe the ideal version of the dish?
+3. What was exceptional about your result?
+4. Did you have any moments of doubt?
+5. What aspect of the dish did the chef focus the lesson on?
+6. What useful knowledge did you gain?
+7. Can you explain what you have learned in terms of the science of cooking?
+8. How can this knowledge help your dish?
+9. How can it go wrong?
 
-Narrator: What dish have you made today?
-Pupil: Today I made chili beans.
-Narrator: How did the chef describe their ideal vision for the dish?
-Pupil: The chef said that they wanted the dish to have a good aroma.
-Narrator: What part of the recipe was the focus today?
-Pupil: The focus was on how to mix the contents of the pan.
-Narrator: What was the key technique for that?
-Pupil: The key technique was to be aware of the transfer of heat.
-Narrator: Did the chef talk mostly about that?
-Pupil: The chef talked about that and also about how to control the temperature of the food.
-Narrator: How do you get control of the process?
-Pupil: By adjusting the heat, you can control the process.
-Narrator: What's the reasoning, or science behind it?
-Pupil: The reasoning is that if the heat is too high, the food will burn, and if the heat is too low, the food will not cook properly.
-Narrator: When do you have to react?
-Pupil: When the aromas are getting too intense, or burns.
+And here are the pupil's answers:
+1. I cooked scrambled eggs according to the chef's instructions.
+2. The chef described the ideal version of the dish as creamy, rich, and with a glossy appearance.
+3. My result was close to the ideal, but my eggs were a little dry.
+4. I did not have any moments of doubt.
+5. The chef focused the lesson on timing and heat control.
+6. I learned how to cook scrambled eggs using low heat and how to time them properly.
+7. I can explain what I have learned in terms of the science of cooking. Eggs cook easily with low heat, and the longer they are cooked, the more water will evaporate, which can give them a fluffy consistency.
+8. This knowledge can help me cook scrambled eggs that are closer to the ideal.
+9. If cooked for too long or at too high a heat, scrambled eggs can become dry and fluffy.
