@@ -14,6 +14,8 @@ openai.api_key = os.getenv("OPENAI_KEY")
 transcribe = boto3.client('transcribe')
 s3 = boto3.client('s3')
 
+DEBUG = True
+
 START_PROMPT = """The following is a transcript of a cooking lesson. The chef talks to the pupil. The narrator summarizes for the viewers what the chef says.
 
 Chef: Let's start.
@@ -67,6 +69,11 @@ class Narrator:
     result = NarratorResult()
 
     def _predict_next(self, prompt:str=START_PROMPT, stop:list=["Chef:", "Narrator:"], max_tokens:int=75) -> str:
+
+        if DEBUG:
+            time.sleep(3)
+            return "A dumb ai sentence."
+
         response = openai.Completion.create(
           engine=self.model,
           prompt=prompt,
@@ -81,7 +88,6 @@ class Narrator:
             ("FAILED PROMPT\n----------------------------------------\n" + prompt + '\n----------------------------------------')
             raise AssertionError("No response from GPT")
 
-        # response = "A dumb ai sentence."
         return response
 
     def _converse(self, prompt:str, persona_in:str, persona_gpt:str, sentences:str) -> str:
