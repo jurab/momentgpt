@@ -78,7 +78,7 @@ class Narrator:
           stop=stop).to_dict()['choices'][0]['text'].strip()
 
         if not response:
-            print("FAILED PROMPT\n----------------------------------------\n" + prompt + '\n----------------------------------------')
+            ("FAILED PROMPT\n----------------------------------------\n" + prompt + '\n----------------------------------------')
             raise AssertionError("No response from GPT")
 
         # response = "A dumb ai sentence."
@@ -145,6 +145,9 @@ class Client:
         self.audio_url = f"s3://{self.audio_bucket}/{self.audio_prefix}/mp3_blob.mp3"
         self.text_url = f"s3://{self.text_bucket}/{self.text_prefix}.json"
 
+        if self.text_exists():
+            self.transcript = self.fetch_transcript()
+
     def narrate(self) -> str:
         with Halo(text='Conversing with GPT'):
             self.narrative = self.narrator.run(self.transcript, model=Models.DAVINCI)
@@ -153,11 +156,23 @@ class Client:
     def _s3_folder_exists(self, bucket: str, prefix: str) -> bool:
         return 'Contents' in s3.list_objects(Bucket=bucket, Prefix=prefix)
 
+    def audio_exists(self):
+        return self._s3_folder_exists(self.audio_bucket, self.audio_prefix)
+
+    def text_exists(self):
+        return self._s3_folder_exists(self.text_bucket, self.feedback_id)
+
+    def fetch_transcript(self):
+        try:
+            return  json.loads(s3.get_object(Bucket=self.text_bucket, Key=self.text_prefix)['Body'].read())['results']['transcripts'][0]['transcript']
+        except ClientError:
+            raise BotoError(f"Cannot find transcript at {self.audio_url}")
+
     def transcribe(self):
-        if not self._s3_folder_exists(self.audio_bucket, self.audio_prefix):
+        if not self.audio_exists():
             raise BotoError(f"Feedback folder not found at {self.audio_url}")
 
-        if self._s3_folder_exists(self.text_bucket, self.feedback_id):
+        if self.text_exists():
             raise BotoError(f"Transcription already exists at {self.text_url}")
 
         with Halo(text='Running transcription'):
@@ -183,10 +198,7 @@ class Client:
                 time.sleep(5)
 
         with Halo(text='Fetching transcription'):
-            transcript = json.loads(s3.get_object(Bucket=self.text_bucket, Key=self.text_prefix)['Body'].read())['results']['transcripts'][0]['transcript']
+            transcript = self.fetch_transcript()
 
         self.transcript = transcript
         return transcript
-
-
-client = Client("646ee549-8d81-43b5-8470-257fdc26dda2")
