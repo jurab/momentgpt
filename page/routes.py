@@ -1,77 +1,16 @@
 
+
 import re
 
-from bottle import route, run, static_file, request
+from bottle import route, static_file, request
 from client import Client, QUESTIONS
 
 
 HEAD = '''
 <head>
+    <script src="https://unpkg.com/htmx.org@1.6.1"></script>
 
-<script src="https://unpkg.com/htmx.org@1.6.1"></script>
-
-<style>
-
-    @font-face {
-        font-family: hfx_roman;
-        src: url("/media/fonts/HoeflerTxt-Roman.otf") format("opentype");
-    }
-
-    .default {
-        font-family: "hfx_roman";
-        padding: 20px;
-        transition: all 1s ease-in;
-    }
-
-    .form-control {
-        height: 100px;
-        width: 500px;
-    }
-
-    .results {
-        padding: 30px
-    }
-
-    .questions {
-        line-height: 2;
-    }
-
-    .answers {
-        line-height: 2;
-    }
-
-    #input-box {
-        border-radius: 15px;
-        border: 2px solid;
-        padding: 20px;
-        width: 500px;
-        height: 15px;
-        font-family: "hfx_roman";
-        outline: none;
-        font-size: 20;
-    }
-
-    .button {
-      background-color: white;
-      border: 0.03px solid grey;
-      color: black;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 20px;
-      height: 50;
-      margin: 10px 10px;
-      font-family: "hfx_roman";
-      border-radius: 12px;
-      box-shadow: 3px 3px 5px grey;
-    }
-
-    .button:active {
-        box-shadow: none;
-    }
-
-</style>
-
+    <link rel="stylesheet" href="static/page/style.css"/>
 </head>
 '''
 
@@ -88,14 +27,10 @@ def validate_feedback_id(feedback_id):
         raise ValidationError("Unexpected feedback id format. Expecting i.e.: 1ab8eeec-7f60-4af0-ba16-06ad6f55a8a9")
 
 
-@route('/media/<filename>')
-def media(filename):
-    return static_file(filename, root='media')
-
-
-@route('/media/fonts/<font>')
-def fonts(font):
-    return static_file(font, root='media/fonts')
+@route('/static/<path:path>')
+def media(path):
+    print('>>> MEDIA CALL', path)
+    return static_file(path, root='.')
 
 
 @route('/audio_status/<feedback_id>')
@@ -231,5 +166,3 @@ def feedback():
             '''
 
     return f"{HEAD}\n\n{body}"
-
-run(host='localhost', port=8080, debug=True)

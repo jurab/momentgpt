@@ -1,0 +1,57 @@
+@font-face {
+      font-family: hfx_roman;
+      src: url("/media/fonts/HoeflerTxt-Roman.otf") format("opentype");
+  }
+
+  .default {
+      font-family: "hfx_roman";
+      padding: 20px;
+      transition: all 1s ease-in;
+  }
+
+  .form-control {
+      height: 100px;
+      width: 500px;
+  }
+
+  .results {
+      padding: 30px
+  }
+
+  .questions {
+      line-height: 2;
+  }
+
+  .answers {
+      line-height: 2;
+  }
+
+  #input-box {
+      border-radius: 15px;
+      border: 2px solid;
+      padding: 20px;
+      width: 500px;
+      height: 15px;
+      font-family: "hfx_roman";
+      outline: none;
+      font-size: 20;
+  }
+
+  .button {
+    background-color: white;
+    border: 0.03px solid grey;
+    color: black;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    height: 50;
+    margin: 10px 10px;
+    font-family: "hfx_roman";
+    border-radius: 12px;
+    box-shadow: 3px 3px 5px grey;
+  }
+
+  .button:active {
+      box-shadow: none;
+  }
