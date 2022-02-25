@@ -1,9 +1,11 @@
 
 
+import json
 import re
 
 from bottle import route, static_file, request
 from client import Client, QUESTIONS
+from furl import furl
 
 
 HEAD = '''
@@ -21,19 +23,57 @@ class ValidationError(Exception):
     pass
 
 
+def _hx_vals(dictionary=None):
+    if not dictionary:
+        return ''
+    return f"hx-vals='{json.dumps(dictionary)}'" if any(dictionary.values()) else ''
+
+
+def lazy_block(hx_get, load_label, extra_values=None, indicator_size=20):
+    return f"""
+        <div hx-get="{hx_get}" hx-trigger="load" {_hx_vals(extra_values)}>
+            <span class="htmx-indicator">
+                <img src="/static/bars.svg" width="{indicator_size}"/>
+                {load_label}
+            </span>
+        </div>
+    """
+
+
+def button(identifier, hx_get, hx_target, label, load_label=None):
+
+    extra_values = {
+        'load_label': load_label
+    }
+
+    return f'''
+        <button class="button"
+            hx-swap="outerHTML"
+            id="{identifier}"
+            hx-get="{hx_get}"
+            hx-target="{hx_target}"
+            {_hx_vals(extra_values)}
+        >
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{label} <img class="htmx-indicator" src="/static/bars.svg" width="20">
+        </button>
+    '''
+
+
 def validate_feedback_id(feedback_id):
     pattern = re.compile("[0-9a-z]{8}(-[0-9a-z]{4}){3}-[0-9a-z]{12}$")
     if not pattern.match(feedback_id):
         raise ValidationError("Unexpected feedback id format. Expecting i.e.: 1ab8eeec-7f60-4af0-ba16-06ad6f55a8a9")
 
 
+# ------- UTILITY ROUTES -------
+
+
 @route('/static/<path:path>')
 def media(path):
-    print('>>> MEDIA CALL', path)
-    return static_file(path, root='.')
+    return static_file(path, root='static')
 
 
-@route('/audio_status/<feedback_id>')
+@route('/audio/<feedback_id>/status')
 def audio_status(feedback_id):
     client = Client(feedback_id)
     message = "✔ Audio exists" if client.audio_exists() else "✘ Audio not found"
@@ -43,52 +83,49 @@ def audio_status(feedback_id):
 @route('/text/<feedback_id>')
 def text(feedback_id):
     client = Client(feedback_id)
+
+    # TRANSCRIPT FOUND
     if client.text_exists():
         return f'''
           <br>
           <div> ✔ Transcript exists </div>
           <br>
-          {_lazy_block(f"/transcript/{feedback_id}", "Fetching...")}
+          {lazy_block(f"/transcript/{feedback_id}", "Fetching...")}
         '''
 
+    # TRANSCRIPT NOT FOUND, run?
     else:
         return f'''
             <br>
-            <div> ✘ Text not found </div>
+            <div> ✘ Transcript not found </div>
             <br>
-            <button class='button' id="transcribe-button" hx-get="/lazy_run_transcription/{feedback_id}" hx-target="#transcribe-button" hx-swap="outerHTML">
-                Run transcription <img class="htmx-indicator" src="/media/bars.svg" width="20">
-            </button>
+            {button(
+                identifier='transcribe_button',
+                hx_get=f'/lazy/transcript/{feedback_id}/run',
+                hx_target='#transcribe-button',
+                load_label='AWS transcribing...',
+                label='Run transcript')}
         '''
 
 
-@route('/run_transcription/<feedback_id>')
+@route('/lazy/<path:path>')
+def lazy_route(path):
+    extra_values = dict(furl(f"/mock_url?{request.query_string}").args)
+    load_label = extra_values.pop('load_label', None)
+    return lazy_block(path, load_label, extra_values)
+
+
+# ------- UI ROUTES -------
+
+
+@route('/transcript/<feedback_id>/run')
 def run_transcription(feedback_id):
     client = Client(feedback_id)
     _ = client.transcribe()
     return text(feedback_id)
 
 
-
-@route('/lazy_run_transcription/<feedback_id>')
-def lazy_run_transcription(feedback_id):
-    return _lazy_block(f'/run_transcription/{feedback_id}', "AWS transcribing...")
-
-
-@route('/answers/<feedback_id>')
-def answers(feedback_id):
-    client = Client(feedback_id)
-    _ = client.narrate()
-    answers = '<br>'.join(client.narrator.result.answers.split('\n'))
-    return f'<p class="answers"> {answers} </p>'
-
-
-@route('/qa/<feedback_id>')
-def qa(feedback_id):
-    return _lazy_block(f"/answers/{feedback_id}", "Asking GPT...")
-
-
-@route('/run_transcript/<feedback_id>')
+@route('/transcript/<feedback_id>/run')
 def run_transcript(feedback_id):
     client = Client(feedback_id)
     _ = client.narrate
@@ -106,21 +143,25 @@ def transcript(feedback_id):
         <p class="default">{client.fetch_transcript()}</p>
         <h3> Questions </h3>
         <p class="questions"> {QUESTIONS} </p>
-        <button class='button' id="q-button" hx-get="/qa/{feedback_id}" hx-target="#q-button" hx-swap="outerHTML">
-            Load answers <img class="htmx-indicator" src="/media/bars.svg" width="20">
-        </button>
+
+        {button(
+            identifier='q-button',
+            hx_get=f"/lazy/answers/{feedback_id}",
+            hx_target="#q-button",
+            label='Load answers',
+            load_label="Asking GPT...")}
     '''
 
 
-def _lazy_block(hx_get, placeholder, indicator_size=20):
-    return f"""
-        <div hx-get="{hx_get}" hx-trigger="load">
-            <span class="htmx-indicator">
-                <img src="/media/bars.svg" width="{indicator_size}"/>
-                {placeholder}
-            </span>
-        </div>
-    """
+@route('/answers/<feedback_id>')
+def answers(feedback_id):
+    client = Client(feedback_id)
+    _ = client.narrate()
+    answers = '<br>'.join(client.narrator.result.answers.split('\n'))
+    return f'''
+        <h3> Answers </h3>
+        <p class="answers"> {answers} </p>
+    '''
 
 
 @route('/results', method='POST')
@@ -139,9 +180,9 @@ def results():
 
     return f"""
             <br>
-            {_lazy_block(f"/audio_status/{feedback_id}", "Looking for Audio...")}
+            {lazy_block(f"/audio/{feedback_id}/status", "Looking for Audio...")}
             <br>
-            {_lazy_block(f"/text/{feedback_id}", "Looking for Transcript...")}
+            {lazy_block(f"/text/{feedback_id}", "Looking for Transcript...")}
         """
 
 

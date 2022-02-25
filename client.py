@@ -14,7 +14,7 @@ openai.api_key = os.getenv("OPENAI_KEY")
 transcribe = boto3.client('transcribe')
 s3 = boto3.client('s3')
 
-DEBUG = True
+DEBUG = False
 
 START_PROMPT = """The following is a transcript of a cooking lesson. The chef talks to the pupil. The narrator summarizes for the viewers what the chef says.
 
@@ -72,7 +72,13 @@ class Narrator:
 
         if DEBUG:
             time.sleep(3)
-            return "A dumb ai sentence."
+            return """1. I cooked a lamb navarin.
+            2. The chef described the ideal version of the dish as being rich in appearance, with bright vegetables.
+            3. My result was exceptional because the lamb was cooked well and the vegetables were very colourful.
+            4. I had moments of doubt when I added too much salt to the dish.
+            5. The chef focused the lesson on the cooking of the lamb.
+            6. I learnt that it is important to get a high temperature to create a good caramelisation, and that braising with a less tender cut of meat will still produce good results.
+            7. The chef explained how the process of searing in the juices and then braising the lamb creates tenderness."""
 
         response = openai.Completion.create(
           engine=self.model,
