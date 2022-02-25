@@ -3,7 +3,7 @@
 import json
 import re
 
-from bottle import route, static_file, request
+from bottle import route, static_file, request, default_app
 from client import Client, QUESTIONS
 from furl import furl
 
@@ -69,7 +69,8 @@ def validate_feedback_id(feedback_id):
 
 
 @route('/static/<path:path>')
-def media(path):
+def static(path):
+    print('>>> STATIC', path)
     return static_file(path, root='static')
 
 
@@ -188,6 +189,8 @@ def results():
 
 @route('/feedback')
 def feedback():
+
+    print(">>> FUCK THIS SHIT")
 
     body = '''
             <div class="default">

@@ -5,12 +5,15 @@ import requests
 import time
 import json
 
+from botocore.config import Config
 from botocore.exceptions import ClientError
 from dataclasses import dataclass
 from halo import Halo
 
-transcribe = boto3.client('transcribe')
-s3 = boto3.client('s3')
+boto_config = Config(region_name='eu-west-2')
+
+transcribe = boto3.client('transcribe', config=boto_config)
+s3 = boto3.client('s3', config=boto_config)
 
 DEBUG = False
 
