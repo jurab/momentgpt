@@ -1,15 +1,13 @@
 
 import boto3
 import os
-import openai
+import requests
 import time
 import json
 
 from botocore.exceptions import ClientError
 from dataclasses import dataclass
 from halo import Halo
-
-openai.api_key = os.getenv("OPENAI_KEY")
 
 transcribe = boto3.client('transcribe')
 s3 = boto3.client('s3')
@@ -80,21 +78,30 @@ class Narrator:
             6. I learnt that it is important to get a high temperature to create a good caramelisation, and that braising with a less tender cut of meat will still produce good results.
             7. The chef explained how the process of searing in the juices and then braising the lamb creates tenderness."""
 
-        response = openai.Completion.create(
-          engine=self.model,
-          prompt=prompt,
-          temperature=self.temperature,
-          max_tokens=max_tokens,
-          top_p=self.top_p,
-          frequency_penalty=self.frequency_penalty,
-          presence_penalty=self.presence_penalty,
-          stop=stop).to_dict()['choices'][0]['text'].strip()
+        url = f"https://api.openai.com/v1/engines/{self.model}/completions"
+
+        params = {
+            "prompt": prompt,
+            "temperature": self.temperature,
+            "max_tokens": max_tokens,
+            "top_p": self.top_p,
+            "frequency_penalty": self.frequency_penalty,
+            "presence_penalty": self.presence_penalty,
+            "stop": stop
+        }
+
+        headers = {
+            'Authorization': f"Bearer {os.getenv('OPENAI_API_KEY')}",
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.post(url, headers=headers, json=params)
 
         if not response:
             ("FAILED PROMPT\n----------------------------------------\n" + prompt + '\n----------------------------------------')
             raise AssertionError("No response from GPT")
 
-        return response
+        return response.json()['choices'][0]['text'].strip()
 
     def _converse(self, prompt:str, persona_in:str, persona_gpt:str, sentences:str) -> str:
         stops = (f"{persona_in}:", f"{persona_gpt}:", "\n")
