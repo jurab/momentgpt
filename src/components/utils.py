@@ -8,7 +8,7 @@ def hx_vals(dictionary=None):
     return f"hx-vals='{json.dumps(dictionary)}'" if any(dictionary.values()) else ''
 
 
-def lazy_block(hx_get, load_label, extra_values=None, indicator_size=20):
+def lazy_block(hx_get, load_label="Loading...", extra_values=None, indicator_size=20):
     return f"""
         <div hx-get="{hx_get}" hx-trigger="load" {hx_vals(extra_values)}>
             <span class="htmx-indicator">

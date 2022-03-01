@@ -71,7 +71,7 @@ def text(feedback_id):
 @route('/lazy/<path:path>')
 def lazy_route(path):
     extra_values = dict(furl(f"/mock_url?{request.query_string}").args)
-    load_label = extra_values.pop('load_label', None)
+    load_label = extra_values.pop('load_label', '')
     return lazy_block(path, load_label, extra_values)
 
 

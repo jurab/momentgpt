@@ -8,11 +8,13 @@ import json
 from botocore.config import Config
 from botocore.exceptions import ClientError
 from dataclasses import dataclass
+from deepl import Translator
 
 boto_config = Config(region_name='eu-west-2')
 
 transcribe = boto3.client('transcribe', config=boto_config)
 s3 = boto3.client('s3', config=boto_config)
+translator = Translator(os.getenv('DEEPL_API_KEY'))
 
 DEBUG = False
 
@@ -152,8 +154,9 @@ class Client:
     text_url: str = None
 
     feedback_id: str = None
-    transcript: str = None
     narrative: str = None
+    transcript: str = None
+    translation: str = None
 
     def __init__(self, feedback_id:str=None):
 
@@ -188,6 +191,22 @@ class Client:
             return  json.loads(s3.get_object(Bucket=self.text_bucket, Key=self.text_prefix)['Body'].read())['results']['transcripts'][0]['transcript']
         except ClientError:
             raise BotoError(f"Cannot find transcript at {self.audio_url}")
+
+    def detect_language(self, text):
+        return translator.translate_text(text, target_lang="FR").detected_source_lang
+
+    def translate(self):
+        if self.translation:
+            return self.translation
+
+        source_language = self.detect_language(self.transcript.split('.')[0])
+
+        if 'EN' in source_language:
+            return
+
+        result = translator.translate_text(self.transcript, target_lang='EN-GB')
+        self.translation = result.text
+        return result.text
 
     def transcribe(self):
         if not self.audio_exists():
