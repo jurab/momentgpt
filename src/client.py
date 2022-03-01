@@ -8,7 +8,6 @@ import json
 from botocore.config import Config
 from botocore.exceptions import ClientError
 from dataclasses import dataclass
-from halo import Halo
 
 boto_config = Config(region_name='eu-west-2')
 
@@ -171,9 +170,8 @@ class Client:
             self.transcript = self.fetch_transcript()
 
     def narrate(self) -> str:
-        with Halo(text='Conversing with GPT'):
-            self.narrative = self.narrator.run(self.transcript, model=Models.DAVINCI)
-            return self.narrative
+        self.narrative = self.narrator.run(self.transcript, model=Models.DAVINCI)
+        return self.narrative
 
     def _s3_folder_exists(self, bucket: str, prefix: str) -> bool:
         return 'Contents' in s3.list_objects(Bucket=bucket, Prefix=prefix)
@@ -185,6 +183,7 @@ class Client:
         return self._s3_folder_exists(self.text_bucket, self.feedback_id)
 
     def fetch_transcript(self):
+
         try:
             return  json.loads(s3.get_object(Bucket=self.text_bucket, Key=self.text_prefix)['Body'].read())['results']['transcripts'][0]['transcript']
         except ClientError:
@@ -197,30 +196,28 @@ class Client:
         if self.text_exists():
             raise BotoError(f"Transcription already exists at {self.text_url}")
 
-        with Halo(text='Running transcription'):
-            try:
-                transcribe.start_transcription_job(
-                    TranscriptionJobName=self.feedback_id,
-                    Media={
-                        'MediaFileUri': self.audio_url
-                    },
-                    MediaFormat='mp3',
-                    OutputBucketName=self.text_bucket,
-                    OutputKey=self.text_prefix,
-                    IdentifyLanguage=True
-                )
+        try:
+            transcribe.start_transcription_job(
+                TranscriptionJobName=self.feedback_id,
+                Media={
+                    'MediaFileUri': self.audio_url
+                },
+                MediaFormat='mp3',
+                OutputBucketName=self.text_bucket,
+                OutputKey=self.text_prefix,
+                IdentifyLanguage=True
+            )
 
-            except ClientError:
-                raise BotoError(f"Failed starting transcription at {self.audio_url}")
+        except ClientError:
+            raise BotoError(f"Failed starting transcription at {self.audio_url}")
 
-            while True:
-                status = transcribe.get_transcription_job(TranscriptionJobName=self.feedback_id)
-                if status['TranscriptionJob']['TranscriptionJobStatus'] in ['COMPLETED', 'FAILED']:
-                    break
-                time.sleep(5)
+        while True:
+            status = transcribe.get_transcription_job(TranscriptionJobName=self.feedback_id)
+            if status['TranscriptionJob']['TranscriptionJobStatus'] in ['COMPLETED', 'FAILED']:
+                break
+            time.sleep(5)
 
-        with Halo(text='Fetching transcription'):
-            transcript = self.fetch_transcript()
+        transcript = self.fetch_transcript()
 
         self.transcript = transcript
         return transcript

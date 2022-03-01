@@ -52,3 +52,22 @@
 .button:active {
     box-shadow: none;
 }
+
+#tabs > .tab-list {
+  border-bottom: solid 3px #eee;
+}
+
+#tabs > .tab-list a {
+  display: inline-block;
+  padding: 5px 10px;
+  cursor:pointer;
+}
+
+#tabs > .tab-list a.selected {
+  background-color: #eee;
+}
+
+#tabs > .tab-content {
+  padding:10px;
+  margin-bottom:100px;
+}

@@ -1,6 +1,5 @@
 
 from bottle import run
-from page.routes import *
-
+from routes import *
 
 run(host='localhost', port=8080, debug=True, reloader=True)
