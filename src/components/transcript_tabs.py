@@ -1,7 +1,5 @@
 
 
-import time
-
 from bottle import route
 from client import Client
 
