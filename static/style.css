@@ -6,11 +6,6 @@
     transition: all 1s ease-in;
 }
 
-.form-control {
-    height: 100px;
-    width: 500px;
-}
-
 .results {
     padding: 30px
 }
@@ -23,15 +18,24 @@
     line-height: 2;
 }
 
+.text-input {
+  font-family: "hfx_roman";
+  outline: none;
+}
+
 #input-box {
-    border-radius: 15px;
-    border: 2px solid;
-    padding: 20px;
-    width: 500px;
-    height: 15px;
-    font-family: "hfx_roman";
-    outline: none;
-    font-size: 20;
+  border-radius: 15px;
+  border: 2px solid;
+  padding: 20px;
+  width: 500px;
+  height: 15px;
+  font-size: 20;
+}
+
+#new-question {
+  font-size: 20px;
+  padding: 10px;
+  width: 400px;
 }
 
 .button {

@@ -1,5 +1,6 @@
 
 import boto3
+import lorem
 import os
 import requests
 import time
@@ -9,6 +10,10 @@ from botocore.config import Config
 from botocore.exceptions import ClientError
 from dataclasses import dataclass
 from deepl import Translator
+from threading import local
+
+from core.utils import Singleton
+from validators import validate_feedback_id
 
 boto_config = Config(region_name='eu-west-2')
 
@@ -24,7 +29,7 @@ Chef: Let's start.
 Narrator: The chef is about to start the lesson."""
 
 
-QUESTIONS = (
+QUESTIONS = [
     "What did you cook today?",
     "How did the chef describe the ideal version of the dish?",
     "What was exceptional about your result?",
@@ -32,14 +37,11 @@ QUESTIONS = (
     "What aspect of the dish did the chef focus the lesson on?",
     "What useful knowledge did you gain?",
     "Can you explain that in terms of the science of cooking?",
-)
+]
 
 
-QUESTIONS = '\n'.join([f'{i}. {question}' for i, question in enumerate(QUESTIONS, 1)])  # numbered list with newlines
-
-
-MID_PROMPT = f"""After the lesson is over, the pupil gets a questionnaire about the lesson. These are the questions:
-{QUESTIONS}
+MID_PROMPT = """After the lesson is over, the pupil gets a questionnaire about the lesson. These are the questions:
+{questions}
 
 And here are the pupil's answers:"""
 
@@ -70,17 +72,13 @@ class Narrator:
     presence_penalty = 0
     result = NarratorResult()
 
+    def __init__(self, client):
+        self.client = client
+
     def _predict_next(self, prompt:str=START_PROMPT, stop:list=["Chef:", "Narrator:"], max_tokens:int=75) -> str:
 
         if DEBUG:
-            time.sleep(3)
-            return """1. I cooked a lamb navarin.
-            2. The chef described the ideal version of the dish as being rich in appearance, with bright vegetables.
-            3. My result was exceptional because the lamb was cooked well and the vegetables were very colourful.
-            4. I had moments of doubt when I added too much salt to the dish.
-            5. The chef focused the lesson on the cooking of the lamb.
-            6. I learnt that it is important to get a high temperature to create a good caramelisation, and that braising with a less tender cut of meat will still produce good results.
-            7. The chef explained how the process of searing in the juices and then braising the lamb creates tenderness."""
+            return lorem.sentence()
 
         url = f"https://api.openai.com/v1/engines/{self.model}/completions"
 
@@ -117,10 +115,12 @@ class Narrator:
 
         return prompt
 
-    def query_answers(self, context):
-        prompt = context + f"\n\n{MID_PROMPT}\n"
-        return self._predict_next(prompt, max_tokens=300, stop=None)
+    def _mid_prompt(self):
+        return f"\n\n{MID_PROMPT.format(questions=self.client.question_string())}\n"
 
+    def query_answers(self, context):
+        prompt = context + self._mid_prompt()
+        return self._predict_next(prompt, max_tokens=300, stop=None)
 
     def run(self, transcript:str, model=Models.ADA) -> str:
         sentences = transcript.strip().replace('...', '@@').split('.')
@@ -135,14 +135,14 @@ class Narrator:
 
         # INQUIRIES
         gpt_answers = self.query_answers(prompt)
-        prompt += f"\n\n{MID_PROMPT}\n"
+        prompt += self._mid_prompt()
         prompt += gpt_answers
         self.result.answers = gpt_answers
 
         return prompt
 
 
-class Client:
+class Client(local, metaclass=Singleton):
     s3_url = "https://s3.console.aws.amazon.com/s3/object"
 
     audio_bucket: str = "moment-assets-prod"
@@ -154,14 +154,21 @@ class Client:
     text_url: str = None
 
     feedback_id: str = None
+    questions: list = None
     narrative: str = None
     transcript: str = None
     translation: str = None
 
     def __init__(self, feedback_id:str=None):
+        self.narrator = Narrator(client=self)
+        self.questions = QUESTIONS
 
+        if feedback_id:
+            self.set_feedback_id(feedback_id)
+
+    def set_feedback_id(self, feedback_id:str):
+        validate_feedback_id(feedback_id)
         self.feedback_id = feedback_id if feedback_id else None
-        self.narrator = Narrator()
 
         self.audio_prefix = f"uploads/feedback/feedback_audio/{feedback_id}"
         self.text_prefix = f"{self.feedback_id}/{self.feedback_id}.json"
@@ -171,6 +178,12 @@ class Client:
 
         if self.text_exists():
             self.transcript = self.fetch_transcript()
+
+    def question_string(self):
+        return '\n'.join([f'{i}. {question}' for i, question in enumerate(QUESTIONS, 1)])
+
+    def question_html(self):
+        return '<br><br>'.join([f'{i}. {question}' for i, question in enumerate(QUESTIONS, 1)])
 
     def narrate(self) -> str:
         self.narrative = self.narrator.run(self.transcript, model=Models.DAVINCI)
@@ -240,3 +253,6 @@ class Client:
 
         self.transcript = transcript
         return transcript
+
+
+client = Client()
