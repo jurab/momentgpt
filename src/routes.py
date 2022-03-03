@@ -5,6 +5,7 @@ from furl import furl
 
 from client import client
 from components.actions import button
+from components.gpt_conversation import gpt_conversation
 from components.utils import lazy_block
 from components.transcript_tabs import transcript_tabs
 from errors import ValidationError
@@ -88,36 +89,9 @@ def answers():
         <p class="answers"> {answers} </p>
     '''
 
-
-def _questions_body():
-
-    return f'''
-        <div id="questions">
-            <h3> Questions </h3>
-            {client.question_html()}
-            <br><br>
-            <form hx-post="/questions" hx-target="#questions">
-              <label>
-                    <input  name="question"
-                            type="question"
-                            class="text-input"
-                            id="new-question"
-                            placeholder="Add new question">
-              </label>
-            </form>
-        </div>
-
-        {button(
-            identifier='q-button',
-            hx_get=f"/lazy/answers",
-            hx_target="#q-button",
-            label='Load answers',
-            load_label="Asking GPT...")}
-    '''
-
 @route('/questions', method='GET')
 def get_questions():
-    return _questions_body()
+    return gpt_conversation()
 
 @route('/questions', method='POST')
 def post_questions():
@@ -127,7 +101,7 @@ def post_questions():
     if question:
         client.questions.append(question)
 
-    return _questions_body()
+    return gpt_conversation()
 
 
 @route('/results', method='POST')
@@ -137,7 +111,6 @@ def results():
 
     if not feedback_id:
         return ''
-
 
     try:
         client.set_feedback_id(feedback_id)

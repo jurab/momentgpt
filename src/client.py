@@ -59,8 +59,8 @@ class BotoError(Exception):
 
 @dataclass(init=False)
 class NarratorResult:
-    feedback: str
-    answers: str
+    feedback: str = None
+    answers: str = None
 
 
 class Narrator:
@@ -123,18 +123,19 @@ class Narrator:
         return self._predict_next(prompt, max_tokens=300, stop=None)
 
     def run(self, transcript:str, model=Models.ADA) -> str:
-        sentences = transcript.strip().replace('...', '@@').split('.')
-        sentences = [sentence.strip().replace('@@', '...') + '.' for sentence in sentences if sentence]
-        sentence_pairs = [' '.join(pair) for pair in zip(sentences[::2], sentences[1::2])]
 
-        # CHEF FEEDBACK
-        prompt = self._converse(START_PROMPT, 'Chef', 'Narrator', sentence_pairs)
-        # prompt = open('results/aki_paella.txt', 'r').read()
+        if not self.result.feedback:
+            sentences = transcript.strip().replace('...', '@@').split('.')
+            sentences = [sentence.strip().replace('@@', '...') + '.' for sentence in sentences if sentence]
+            sentence_pairs = [' '.join(pair) for pair in zip(sentences[::2], sentences[1::2])]
 
-        self.result.feedback = prompt
+            # CHEF FEEDBACK
+            prompt = self._converse(START_PROMPT, 'Chef', 'Narrator', sentence_pairs)
+
+            self.result.feedback = prompt
 
         # INQUIRIES
-        gpt_answers = self.query_answers(prompt)
+        gpt_answers = self.query_answers(self.result.feedback)
         prompt += self._mid_prompt()
         prompt += gpt_answers
         self.result.answers = gpt_answers
@@ -176,6 +177,9 @@ class Client(local, metaclass=Singleton):
         self.audio_url = f"s3://{self.audio_bucket}/{self.audio_prefix}/mp3_blob.mp3"
         self.text_url = f"s3://{self.text_bucket}/{self.text_prefix}.json"
 
+        self.questions = QUESTIONS
+        self.narrator = Narrator(client=self)
+        
         if self.text_exists():
             self.transcript = self.fetch_transcript()
 
