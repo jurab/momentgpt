@@ -3,10 +3,11 @@
 from bottle import route
 from client import client
 
-from components.utils import lazy_block
+from .utils import lazy_block
 
 
 def transcript_tabs():
+
     return f'''
       <div
         id="text-tabs"
@@ -38,7 +39,7 @@ def _text_tab1():
         	<a hx-get="text/tab2"> Translation </a>
         </div>
         <div class="tab-content">
-            <p class="tab-content"> {client.fetch_transcript() if client.text_exists() else ""} </p>
+            <p class="tab-content"> {client.get_transcript() if client.text_exists() else ""} </p>
         </div>
     '''
 

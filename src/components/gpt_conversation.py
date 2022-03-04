@@ -1,10 +1,9 @@
 
+from .actions import button
 from client import client
-from components.actions import button
 
 
 def gpt_conversation():
-
     return f'''
         <div id="questions">
             <h3> Questions </h3>

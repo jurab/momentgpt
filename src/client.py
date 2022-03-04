@@ -1,5 +1,6 @@
 
 import boto3
+import logging
 import lorem
 import os
 import requests
@@ -7,13 +8,16 @@ import time
 import json
 
 from botocore.config import Config
-from botocore.exceptions import ClientError
+from botocore.exceptions import ClientError as BotoClientError
 from dataclasses import dataclass
 from deepl import Translator
-from threading import local
+from functools import lru_cache
+from threading import local, get_ident as get_thread_id
 
 from core.utils import Singleton
 from validators import validate_feedback_id
+
+cache = lru_cache(maxsize=None)
 
 boto_config = Config(region_name='eu-west-2')
 
@@ -54,6 +58,10 @@ class Models:
 
 
 class BotoError(Exception):
+    pass
+
+
+class ClientError(Exception):
     pass
 
 
@@ -154,34 +162,36 @@ class Client(local, metaclass=Singleton):
     text_prefix: str = None
     text_url: str = None
 
-    feedback_id: str = None
+    _feedback_id: str = None
     questions: list = None
     narrative: str = None
     transcript: str = None
     translation: str = None
 
-    def __init__(self, feedback_id:str=None):
-        self.narrator = Narrator(client=self)
-        self.questions = QUESTIONS
+    @property
+    def feedback_id(self):
+        if not self._feedback_id:
+            logging.exception(f"\n\nNO ID ERROR\nfeedback_id: {self._feedback_id}\nthread_id: {get_thread_id()}\nclient_id: {id(self)}\ntime: {time.time()}")
+            logging.exception(f"{self.text_url}\n{self.audio_url}")
+            raise ClientError("No feedback ID")
+        return self._feedback_id
 
-        if feedback_id:
-            self.set_feedback_id(feedback_id)
-
-    def set_feedback_id(self, feedback_id:str):
+    @feedback_id.setter
+    def feedback_id(self, feedback_id:str):
         validate_feedback_id(feedback_id)
-        self.feedback_id = feedback_id if feedback_id else None
+
+        self._feedback_id = feedback_id
+
+        logging.exception(f"\n\nCLIENT SETTER\nfeedback_id: {self._feedback_id}\nthread_id: {get_thread_id()}\nclient_id: {id(self)}\ntime: {time.time()}")
 
         self.audio_prefix = f"uploads/feedback/feedback_audio/{feedback_id}"
-        self.text_prefix = f"{self.feedback_id}/{self.feedback_id}.json"
+        self.text_prefix = f"{feedback_id}/{feedback_id}.json"
 
         self.audio_url = f"s3://{self.audio_bucket}/{self.audio_prefix}/mp3_blob.mp3"
         self.text_url = f"s3://{self.text_bucket}/{self.text_prefix}.json"
 
         self.questions = QUESTIONS
         self.narrator = Narrator(client=self)
-        
-        if self.text_exists():
-            self.transcript = self.fetch_transcript()
 
     def question_string(self):
         return '\n'.join([f'{i}. {question}' for i, question in enumerate(QUESTIONS, 1)])
@@ -194,19 +204,25 @@ class Client(local, metaclass=Singleton):
         return self.narrative
 
     def _s3_folder_exists(self, bucket: str, prefix: str) -> bool:
+        self.feedback_id
         return 'Contents' in s3.list_objects(Bucket=bucket, Prefix=prefix)
 
     def audio_exists(self):
         return self._s3_folder_exists(self.audio_bucket, self.audio_prefix)
 
     def text_exists(self):
-        return self._s3_folder_exists(self.text_bucket, self.feedback_id)
+        return self._s3_folder_exists(self.text_bucket, self.text_prefix)
+
+    def get_transcript(self):
+        if not self.transcript:
+            self.transcript = self.fetch_transcript()
+        return self.transcript
 
     def fetch_transcript(self):
 
         try:
             return  json.loads(s3.get_object(Bucket=self.text_bucket, Key=self.text_prefix)['Body'].read())['results']['transcripts'][0]['transcript']
-        except ClientError:
+        except BotoClientError:
             raise BotoError(f"Cannot find transcript at {self.audio_url}")
 
     def detect_language(self, text):

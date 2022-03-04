@@ -1,7 +1,10 @@
 
+import logging
+import time
 
 from bottle import route, static_file, request
 from furl import furl
+from threading import get_ident as get_thread_id
 
 from client import client
 from components.actions import button
@@ -89,9 +92,11 @@ def answers():
         <p class="answers"> {answers} </p>
     '''
 
+
 @route('/questions', method='GET')
 def get_questions():
     return gpt_conversation()
+
 
 @route('/questions', method='POST')
 def post_questions():
@@ -113,7 +118,7 @@ def results():
         return ''
 
     try:
-        client.set_feedback_id(feedback_id)
+        client.feedback_id = feedback_id
     except ValidationError:
         return f"<p>Expected format: <b>1ab8eeec-7f60-4af0-ba16-06ad6f55a8a9</b></p>\
                  <p>Got instead: <b>{feedback_id}</b></p>"
