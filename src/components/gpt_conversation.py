@@ -1,15 +1,15 @@
 
 from .actions import button
-from client import client
+from client import Client
 
 
-def gpt_conversation():
+def gpt_conversation(feedback_id):
     return f'''
         <div id="questions">
             <h3> Questions </h3>
-            {client.question_html()}
+            {Client(feedback_id).question_html()}
             <br><br>
-            <form hx-post="/questions" hx-target="#questions">
+            <form hx-post="/questions/{feedback_id}" hx-target="#questions">
               <label>
                     <input  name="question"
                             type="question"
@@ -21,7 +21,7 @@ def gpt_conversation():
 
             {button(
                 identifier='q-button',
-                hx_get=f"/lazy/answers",
+                hx_get=f"/lazy/answers/{feedback_id}",
                 hx_target="#q-button",
                 label='Load answers',
                 load_label="Asking GPT...")}

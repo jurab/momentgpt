@@ -15,7 +15,7 @@ from functools import lru_cache
 from threading import local, get_ident as get_thread_id
 
 from core.utils import Singleton
-from validators import validate_feedback_id
+from validators import validatefeedback_id
 
 cache = lru_cache(maxsize=None)
 
@@ -151,7 +151,16 @@ class Narrator:
         return prompt
 
 
-class Client(local, metaclass=Singleton):
+class AllClients(type):
+    _instances = {}
+
+    def __call__(cls, feedback_id=None, *args, **kwargs):
+        if feedback_id not in cls._instances:
+            cls._instances[feedback_id] = super(AllClients, cls).__call__(feedback_id, *args, **kwargs)
+        return cls._instances[feedback_id]
+
+
+class Client(local, metaclass=AllClients):
     s3_url = "https://s3.console.aws.amazon.com/s3/object"
 
     audio_bucket: str = "moment-assets-prod"
@@ -162,27 +171,18 @@ class Client(local, metaclass=Singleton):
     text_prefix: str = None
     text_url: str = None
 
-    _feedback_id: str = None
+    feedback_id: str = None
     questions: list = None
     narrative: str = None
     transcript: str = None
     translation: str = None
 
-    @property
-    def feedback_id(self):
-        if not self._feedback_id:
-            logging.exception(f"\n\nNO ID ERROR\nfeedback_id: {self._feedback_id}\nthread_id: {get_thread_id()}\nclient_id: {id(self)}\ntime: {time.time()}")
-            logging.exception(f"{self.text_url}\n{self.audio_url}")
-            raise ClientError("No feedback ID")
-        return self._feedback_id
+    def __init__(self, feedback_id):
+        validatefeedback_id(feedback_id)
 
-    @feedback_id.setter
-    def feedback_id(self, feedback_id:str):
-        validate_feedback_id(feedback_id)
+        self.feedback_id = feedback_id
 
-        self._feedback_id = feedback_id
-
-        logging.exception(f"\n\nCLIENT SETTER\nfeedback_id: {self._feedback_id}\nthread_id: {get_thread_id()}\nclient_id: {id(self)}\ntime: {time.time()}")
+        logging.exception(f"\n\nCLIENT SETTER\nfeedback_id: {self.feedback_id}\nthread_id: {get_thread_id()}\nclient_id: {id(self)}\ntime: {time.time()}")
 
         self.audio_prefix = f"uploads/feedback/feedback_audio/{feedback_id}"
         self.text_prefix = f"{feedback_id}/{feedback_id}.json"
@@ -273,6 +273,3 @@ class Client(local, metaclass=Singleton):
 
         self.transcript = transcript
         return transcript
-
-
-client = Client()

@@ -6,7 +6,7 @@ from bottle import route, static_file, request
 from furl import furl
 from threading import get_ident as get_thread_id
 
-from client import client
+from client import Client
 from components.actions import button
 from components.gpt_conversation import gpt_conversation
 from components.utils import lazy_block
@@ -31,24 +31,24 @@ def static(path):
     return static_file(path, root='static')
 
 
-@route('/audio/status')
-def audio_status():
-    message = "✔ Audio exists" if client.audio_exists() else "✘ Audio not found"
+@route('/audio/status/<feedback_id>')
+def audio_status(feedback_id):
+    message = "✔ Audio exists" if Client(feedback_id).audio_exists() else "✘ Audio not found"
     return f'<div>{message}</div>'
 
 
-@route('/text')
-def text():
+@route('/text/<feedback_id>')
+def text(feedback_id):
 
     # TRANSCRIPT FOUND
-    if client.text_exists():
+    if Client(feedback_id).text_exists():
         return f'''
             <br>
             <div> ✔ Transcript exists </div>
             <br>
             <br>
-            {transcript_tabs()}
-            {get_questions()}
+            {transcript_tabs(feedback_id)}
+            {get_questions(feedback_id)}
             <br>
         '''
 
@@ -60,7 +60,7 @@ def text():
             <br>
             {button(
                 identifier="transcribe-button",
-                hx_get=f'/lazy/transcript/run',
+                hx_get=f'/lazy/transcript/run/{feedback_id}',
                 hx_target="#transcribe-button",
                 load_label='AWS transcribing...',
                 label='Run transcript')}
@@ -77,15 +77,16 @@ def lazy_route(path):
 # ------- UI ROUTES -------
 
 
-@route('/transcript/run')
-def run_transcription():
-    _ = client.transcribe()
+@route('/transcript/run/<feedback_id>')
+def run_transcription(feedback_id):
+    _ = Client(feedback_id).transcribe()
     return text()
 
 
-@route('/answers')
-def answers():
-    _ = client.narrate()
+@route('/answers/<feedback_id>')
+def answers(feedback_id):
+    client = Client(feedback_id)
+    client.narrate()
     answers = '<br>'.join(client.narrator.result.answers.split('\n'))
     return f'''
         <h3> Answers </h3>
@@ -93,20 +94,20 @@ def answers():
     '''
 
 
-@route('/questions', method='GET')
-def get_questions():
-    return gpt_conversation()
+@route('/questions/<feedback_id>', method='GET')
+def get_questions(feedback_id):
+    return gpt_conversation(feedback_id)
 
 
-@route('/questions', method='POST')
-def post_questions():
+@route('/questions/<feedback_id>', method='POST')
+def post_questions(feedback_id):
 
     question = request.params.get('question')
 
     if question:
-        client.questions.append(question)
+        Client(feedback_id).questions.append(question)
 
-    return gpt_conversation()
+    return gpt_conversation(feedback_id)
 
 
 @route('/results', method='POST')
@@ -118,16 +119,16 @@ def results():
         return ''
 
     try:
-        client.feedback_id = feedback_id
+        Client(feedback_id)
     except ValidationError:
         return f"<p>Expected format: <b>1ab8eeec-7f60-4af0-ba16-06ad6f55a8a9</b></p>\
                  <p>Got instead: <b>{feedback_id}</b></p>"
 
     return f"""
             <br>
-            {lazy_block(f"/audio/status", "Looking for Audio...")}
+            {lazy_block(f"/audio/status/{feedback_id}", "Looking for Audio...")}
             <br>
-            {lazy_block(f"/text", "Looking for Transcript...")}
+            {lazy_block(f"/text/{feedback_id}", "Looking for Transcript...")}
         """
 
 
