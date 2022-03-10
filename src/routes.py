@@ -1,10 +1,7 @@
 
-import logging
-import time
 
 from bottle import route, static_file, request
 from furl import furl
-from threading import get_ident as get_thread_id
 
 from client import Client
 from components.actions import button
@@ -12,6 +9,12 @@ from components.gpt_conversation import gpt_conversation
 from components.utils import lazy_block
 from components.transcript_tabs import transcript_tabs
 from errors import ValidationError
+
+
+"""
+The frontend of the application is created using htmxself.
+https://htmx.org
+"""
 
 
 HEAD = '''

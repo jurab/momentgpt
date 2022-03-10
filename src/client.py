@@ -1,6 +1,5 @@
 
 import boto3
-import logging
 import lorem
 import os
 import requests
@@ -11,21 +10,16 @@ from botocore.config import Config
 from botocore.exceptions import ClientError as BotoClientError
 from dataclasses import dataclass
 from deepl import Translator
-from functools import lru_cache
-from threading import local, get_ident as get_thread_id
 
-from core.utils import Singleton
+from errors import BotoError, ClientError, CompletionError
 from validators import validatefeedback_id
 
-cache = lru_cache(maxsize=None)
-
 boto_config = Config(region_name='eu-west-2')
-
 transcribe = boto3.client('transcribe', config=boto_config)
 s3 = boto3.client('s3', config=boto_config)
 translator = Translator(os.getenv('DEEPL_API_KEY'))
 
-DEBUG = False
+DEBUG = False  # Replaces API calls to the paid APIs (DeepL and OpenAI) with a lorem paragraph. Transcription is still calling AWS.
 
 START_PROMPT = """The following is a transcript of a cooking lesson. The chef talks to the pupil. The narrator summarizes for the viewers what the chef says.
 
@@ -57,14 +51,6 @@ class Models:
     ADA = 'text-ada-001'  # smallest
 
 
-class BotoError(Exception):
-    pass
-
-
-class ClientError(Exception):
-    pass
-
-
 @dataclass(init=False)
 class NarratorResult:
     feedback: str = None
@@ -84,6 +70,25 @@ class Narrator:
         self.client = client
 
     def _predict_next(self, prompt:str=START_PROMPT, stop:list=["Chef:", "Narrator:"], max_tokens:int=75) -> str:
+        """
+        Run a GPT-3 prediction to a prompt.
+
+        Args:
+            prompt:         GPT will finish this text
+            stop:           a list of strings that cause GPT to stop the completion
+            max_tokens:     "1 token is approximately 4 characters or 0.75 words"
+
+        There is a Python client (https://github.com/openai/openai-python),
+        but we're using simple requests to avoid dependency on:
+            Pandas, Numpy, Matplotlib, Plotly, Scipy and Sklearn
+
+
+        Key concepts explained (including tokenization):
+            https://beta.openai.com/docs/introduction/key-concepts
+
+        API reference:
+            https://beta.openai.com/docs/api-reference
+        """
 
         if DEBUG:
             return lorem.sentence()
@@ -108,12 +113,20 @@ class Narrator:
         response = requests.post(url, headers=headers, json=params)
 
         if not response:
-            ("FAILED PROMPT\n----------------------------------------\n" + prompt + '\n----------------------------------------')
-            raise AssertionError("No response from GPT")
+            raise CompletionError("No response from GPT")
 
         return response.json()['choices'][0]['text'].strip()
 
     def _converse(self, prompt:str, persona_in:str, persona_gpt:str, sentences:str) -> str:
+        """
+        Runs a "conversation" with GPT.
+
+        Args:
+            prompt: apriori prompt before the converstaion
+            persona_in: the name of a persona that says the sentences
+            persona_gpt: the persona as which GPT replies
+            sentences: the content for persona_in
+        """
         stops = (f"{persona_in}:", f"{persona_gpt}:", "\n")
 
         for input_sentence in sentences:
@@ -142,7 +155,7 @@ class Narrator:
 
             self.result.feedback = prompt
 
-        # INQUIRIES
+        # Questions & Answers
         gpt_answers = self.query_answers(self.result.feedback)
         prompt += self._mid_prompt()
         prompt += gpt_answers
@@ -151,16 +164,7 @@ class Narrator:
         return prompt
 
 
-class AllClients(type):
-    _instances = {}
-
-    def __call__(cls, feedback_id=None, *args, **kwargs):
-        if feedback_id not in cls._instances:
-            cls._instances[feedback_id] = super(AllClients, cls).__call__(feedback_id, *args, **kwargs)
-        return cls._instances[feedback_id]
-
-
-class Client(local, metaclass=AllClients):
+class Client:
     s3_url = "https://s3.console.aws.amazon.com/s3/object"
 
     audio_bucket: str = "moment-assets-prod"
@@ -176,13 +180,12 @@ class Client(local, metaclass=AllClients):
     narrative: str = None
     transcript: str = None
     translation: str = None
+    language: str = None
 
     def __init__(self, feedback_id):
         validatefeedback_id(feedback_id)
 
         self.feedback_id = feedback_id
-
-        logging.exception(f"\n\nCLIENT SETTER\nfeedback_id: {self.feedback_id}\nthread_id: {get_thread_id()}\nclient_id: {id(self)}\ntime: {time.time()}")
 
         self.audio_prefix = f"uploads/feedback/feedback_audio/{feedback_id}"
         self.text_prefix = f"{feedback_id}/{feedback_id}.json"
@@ -226,18 +229,27 @@ class Client(local, metaclass=AllClients):
             raise BotoError(f"Cannot find transcript at {self.audio_url}")
 
     def detect_language(self, text):
+        if DEBUG:
+            return 'DE'
         return translator.translate_text(text, target_lang="FR").detected_source_lang
 
     def translate(self):
+        """
+        Trigger DeepL translation of `self.transcript`.
+        """
         if self.translation:
             return self.translation
 
-        source_language = self.detect_language(self.transcript.split('.')[0])
+        source_language = self.language or self.detect_language(self.transcript.split('.')[0])  # detect language of the first sentence
 
         if 'EN' in source_language:
-            return
+            return self.transcript
 
-        result = translator.translate_text(self.transcript, target_lang='EN-GB')
+        if DEBUG:
+            result = lorem.paragraph()
+        else:
+            result = translator.translate_text(self.transcript, target_lang='EN-GB')
+
         self.translation = result.text
         return result.text
 
